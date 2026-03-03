@@ -27,6 +27,12 @@ class Rol {
     +String descripcion
 }
 
+class Bitacora {
+    +int idBitacora
+    +String accion
+    +date fechaHora
+}
+
 class Medicamento {
     +int idMedicamento
     +String codigo
@@ -110,6 +116,7 @@ Usuario "*" --> "1" Rol
 Usuario "1" --> "*" Movimiento
 Medicamento "1" --> "*" Movimiento
 Medicamento "1" --> "*" AlertaVencimiento
+Usuario "1" --> "*" Bitacora
 
 Reporte <|-- ReporteInventarioActual
 Reporte <|-- ReporteProductosAgotados
