@@ -169,31 +169,43 @@ Sistema --> UC8
 ```mermaid
 flowchart LR
 
-%% Empleado
-subgraph Cliente
-UI[Postman / Futuro Interfaz Web Frontend]
+Cliente([Cliente REST / Postman])
+
+subgraph Gateway
+GW[API Gateway]
 end
 
-%% SERVIDOR
-subgraph Servidor
-Controller[Capa Controladores API]
-Service[Capa Servicios Logica]
-Security[Modulo Seguridad]
-AlertService[Servicio Alertas Automaticas]
+subgraph Servicios
+AUTH[Auth Service]
+INV[Inventory Service]
 end
 
-%% BASE DE DATOS
 subgraph BaseDeDatos
-DB[(Base de Datos Relacional)]
+DB[(PostgreSQL Unico)]
 end
 
-%% FLUJO
-UI --> Controller
-Controller --> Service
-Controller --> Security
-Service --> DB
-Security --> DB
-AlertService --> DB
-Service --> AlertService
+Cliente --> GW
+GW --> AUTH
+GW --> INV
+
+AUTH --> DB
+INV --> DB
+
+```
+
+### Diagrama de Contexto
+
+```mermaid
+flowchart LR
+
+Security[Contexto Seguridad]
+Inventory[Contexto Inventario]
+Movement[Contexto Movimientos]
+Monitoring[Contexto Alertas y Reportes]
+
+Security --> Inventory
+Inventory --> Movement
+Inventory --> Monitoring
+Movement --> Monitoring
 
 ```
