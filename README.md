@@ -116,4 +116,50 @@ Reporte <|-- ReporteProductosAgotados
 Reporte <|-- ReporteHistorialMovimientos
 
 ```
+## Diagrama de casos de usos
+```mermaid
 
+flowchart LR
+
+Administrador([Administrador])
+Empleado([Empleado])
+Sistema([Sistema])
+
+subgraph FarmaExpres
+
+UC1([Gestionar Usuarios])
+UC2([Autenticarse])
+UC3([Cambiar Contraseña])
+
+UC4([Registrar Medicamento])
+UC5([Actualizar Medicamento])
+
+UC6([Registrar Salida de Inventario])
+UC7([Consultar Inventario])
+
+UC8([Generar Alertas de Vencimiento])
+
+UC11([Ver Historial de Movimientos])
+
+end
+
+%% Relaciones Administrador
+Administrador --> UC1
+Administrador --> UC2
+Administrador --> UC3
+Administrador --> UC4
+Administrador --> UC5
+Administrador --> UC7
+Administrador --> UC11
+
+%% Relaciones Farmacéutico
+Empleado --> UC2
+Empleado --> UC3
+Empleado --> UC6
+Empleado --> UC7
+
+
+
+%% Sistema genera alertas automáticamente
+Sistema --> UC8
+```
