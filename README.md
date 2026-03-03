@@ -163,3 +163,37 @@ Empleado --> UC7
 %% Sistema genera alertas automáticamente
 Sistema --> UC8
 ```
+
+## Diagrama de Arquitectura Base
+
+```mermaid
+flowchart LR
+
+%% Empleado
+subgraph Cliente
+UI[Postman / Futuro Interfaz Web Frontend]
+end
+
+%% SERVIDOR
+subgraph Servidor
+Controller[Capa Controladores API]
+Service[Capa Servicios Logica]
+Security[Modulo Seguridad]
+AlertService[Servicio Alertas Automaticas]
+end
+
+%% BASE DE DATOS
+subgraph BaseDeDatos
+DB[(Base de Datos Relacional)]
+end
+
+%% FLUJO
+UI --> Controller
+Controller --> Service
+Controller --> Security
+Service --> DB
+Security --> DB
+AlertService --> DB
+Service --> AlertService
+
+```
