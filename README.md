@@ -1,6 +1,6 @@
 # FarmaExpres-Diagramas
 
-##Diagramas de clases 
+## Diagramas de clases 
 
 ```mermaid
 classDiagram
