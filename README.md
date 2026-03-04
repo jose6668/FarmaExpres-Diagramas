@@ -1,5 +1,7 @@
 # FarmaExpres-Diagramas
 
+## [Diagrama de BPMN](./FarmaExpres_BPMN_MVP_v1_0.pdf)
+
 ## Diagramas de clases 
 
 ```mermaid
