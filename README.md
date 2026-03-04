@@ -102,6 +102,8 @@ class TipoMovimiento {
     <<enumeration>>
     Entrada
     Salida
+    Actualizado
+    Eliminado
 }
 
 class EstadoAlerta {
@@ -141,7 +143,7 @@ UC3([Cambiar Contraseña])
 UC4([Registrar Medicamento])
 UC5([Actualizar Medicamento])
 
-UC6([Registrar Salida de Inventario])
+
 UC7([Consultar Inventario])
 
 UC8([Generar Alertas de Vencimiento])
@@ -161,8 +163,6 @@ Administrador --> UC11
 
 %% Relaciones Farmacéutico
 Empleado --> UC2
-Empleado --> UC3
-Empleado --> UC6
 Empleado --> UC7
 
 
