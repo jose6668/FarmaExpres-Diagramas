@@ -8,123 +8,109 @@
 classDiagram
 
 
-
-
-class Usuario {
-    +int idUsuario
-    +String nombre
-    +String correo
+class User {
+    +int idUser
+    +String name
+    +String email
     +String passwordHash
-    +EstadoUsuario estado
-    +autenticar()
-    +cambiarPassword()
-    +bloquearUsuario()
+    +UserStatus State
+    +authenticate()
+    +changePassword()
+    +BlockUser()
 }
 
 
 
-class Rol {
-    +int idRol
-    +String nombre
-    +String descripcion
+class Role {
+    +int idRole
+    +String name
+    +String description
 }
 
-class Bitacora {
-    +int idBitacora
-    +String accion
-    +date fechaHora
+class Binnacle {
+    +int idBinnacle
+    +String action
+    +date dateTime
 }
 
-class Medicamento {
-    +int idMedicamento
-    +String codigo
-    +String nombre
-    +decimal precioUnitario
-    +Date fechaVencimiento
+class product {
+    +int idproduct
+    +String code
+    +String name
+    +decimal Unitprice
+    +Date ExpirationDate
     +int stock
-    +EstadoMedicamento estado
-    +actualizarDatos()
-    +desactivar()
-    +verificarVencimiento()
-    +aumentarStock(cantidad)
-    +disminuirStock(cantidad)
+    +ProductState State
+    +createProduct()
+    +updateProduct()
+    +removeProduct()
+    +listProducts()
+    +outofstockproducts()
 }
 
-class Movimiento {
-    +int idMovimiento
-    +TipoMovimiento tipo
-    +int cantidad
-    +int stockAntes
-    +int stockDEspues
-    +DateTime fechaHora
-    +registrar()
+class Motion {
+    +int idMotion
+    +MovementType Type
+    +int amount
+    +int stockBefore
+    +int stockDesuer
+    +DateTime dateTime
+    +register()
 }
 
-class AlertaVencimiento {
-    +int idAlerta
-    +DateTime fechaGeneracion
-    +Date fechaObjetivo
-    +int diasAnticipacion
-    +EstadoAlerta estado
-    +generar()
-    +bloquearMedicamento()
+class ExpirationAlert {
+    +int idAlert
+    +DateTime generationdate
+    +Date ExpirationDate
+    +int daysAnticipation
+    +StateofAlert state
+    +trigger()
+    +blockproduct()
 }
 
 
-class Reporte {
+class Report {
     <<abstract>>
-    +int idReporte
-    +DateTime fechaGeneracion
-    +generar()
+    +int idReport
+    +DateTime generationdate
+    +trigger()
 }
 
 
-class ReporteInventarioActual
-class ReporteProductosAgotados
-class ReporteHistorialMovimientos
+%% ENUMERATIONS
 
-%% ENUMERACIONES
-
-class EstadoUsuario {
+class UserStatus {
     <<enumeration>>
-    Activo
-    Inactivo
-    Bloqueado
+    Asset
+    Idle
+    Blocked
 }
 
 
-class EstadoMedicamento {
+class ProductStatus {
     <<enumeration>>
-    Activo
-    Bloqueado
-    Vencido
+    Asset
+    Blocked
+    Defeated
 }
 
-class TipoMovimiento {
+class MovementType {
     <<enumeration>>
-    Entrada
-    Salida
-    Actualizado
-    Eliminado
+    Entrance
+    Exit
+    Updated
+    Deleted
 }
 
-class EstadoAlerta {
-    <<enumeration>>
-    Activa
-    Atendida
-}
 
 %% RELACIONES
 
-Usuario "*" --> "1" Rol
-Usuario "1" --> "*" Movimiento
-Medicamento "1" --> "*" Movimiento
-Medicamento "1" --> "*" AlertaVencimiento
-Usuario "1" --> "*" Bitacora
+User "*" --> "1" Role
+User "1" --> "*" Motion
+product "1" --> "*" Motion
+product "1" --> "*" ExpirationAlert
+User "1" --> "*" Binnacle
 
-Reporte <|-- ReporteInventarioActual
-Reporte <|-- ReporteProductosAgotados
-Reporte <|-- ReporteHistorialMovimientos
 
 ```
 ## Diagrama de casos de usos
@@ -190,15 +176,16 @@ INV[Inventory Service]
 end
 
 subgraph BaseDeDatos
-DB[(PostgreSQL Unico)]
+DBL[(PostgreSQL login)]
+DBI[(PostgreSQL Inventory)]
 end
 
 Cliente --> GW
 GW --> AUTH
 GW --> INV
 
-AUTH --> DB
-INV --> DB
+AUTH --> DBL
+INV --> DBI
 
 ```
 
