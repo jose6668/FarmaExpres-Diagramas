@@ -1,207 +1,275 @@
-# FarmaExpres-Diagramas
+﻿# FarmaExpres-Diagramas
 
-## [Diagrama de BPMN](./FarmaExpres_BPMN_MVP_v1_0.pdf)
+## Diagrama BPMN
 
-## Diagramas de clases 
+- [Proceso BPMN del MVP](./FarmaExpres_BPMN_MVP_v1_0.pdf)
+
+## Diagrama de clases
 
 ```mermaid
 classDiagram
 
-
 class User {
-    +int idUser
-    +String name
-    +String email
-    +String passwordHash
-    +UserStatus State
+    +number id
+    +string name
+    +string email
+    +string passwordHash
+    +UserStatus status
     +authenticate()
     +changePassword()
-    +BlockUser()
+    +updateProfile()
 }
-
-
 
 class Role {
-    +int idRole
-    +String name
-    +String description
+    +number id
+    +string code
+    +string name
 }
 
-class Binnacle {
-    +int idBinnacle
-    +String action
-    +date dateTime
+class Medicine {
+    +number id
+    +string code
+    +string name
+    +string genericName
+    +string concentration
+    +string dosageForm
+    +string presentation
+    +number stock
+    +number minimumStock
+    +number maximumStock
+    +number unitPrice
+    +boolean active
+    +create()
+    +update()
+    +deactivate()
+    +list()
 }
 
-class product {
-    +int idproduct
-    +String code
-    +String name
-    +decimal Unitprice
-    +Date ExpirationDate
-    +int stock
-    +ProductState State
-    +createProduct()
-    +updateProduct()
-    +removeProduct()
-    +listProducts()
-    +outofstockproducts()
+class Batch {
+    +number id
+    +string batchCode
+    +date expirationDate
+    +number availableStock
+    +BatchStatus status
 }
 
-class Motion {
-    +int idMotion
-    +MovementType Type
-    +int amount
-    +int stockBefore
-    +int stockDesuer
-    +DateTime dateTime
-    +register()
+class Movement {
+    +number id
+    +MovementType type
+    +number amount
+    +string reason
+    +datetime dateTime
+    +string observation
+    +registerEntry()
+    +registerExit()
+    +list()
 }
 
-class ExpirationAlert {
-    +int idAlert
-    +DateTime generationdate
-    +Date ExpirationDate
-    +int daysAnticipation
-    +StateofAlert state
-    +trigger()
-    +blockproduct()
+class Alert {
+    +string id
+    +AlertType type
+    +string status
+    +date expirationDate
+    +number daysRemaining
+    +number batchStock
+    +number operationalStock
+    +generate()
+    +list()
 }
-
 
 class Report {
     <<abstract>>
-    +int idReport
-    +DateTime generationdate
-    +trigger()
+    +string key
+    +string label
+    +generate()
+    +export()
 }
 
+class InventoryReport {
+}
 
-%% ENUMERATIONS
+class MovementsReport {
+}
+
+class ExpiringReport {
+}
+
+class LowStockReport {
+}
+
+class ByUserReport {
+}
 
 class UserStatus {
     <<enumeration>>
-    Asset
-    Idle
-    Blocked
+    ACTIVE
+    BLOCKED
+    INACTIVE
 }
 
-
-class ProductStatus {
+class BatchStatus {
     <<enumeration>>
-    Asset
-    Blocked
-    Defeated
+    ACTIVE
+    EXPIRED
+    BLOCKED
 }
 
 class MovementType {
     <<enumeration>>
-    Entrance
-    Exit
-    Updated
-    Deleted
+    ENTRANCE
+    EXIT
+    UPDATED
+    DELETED
 }
 
-
-%% RELACIONES
+class AlertType {
+    <<enumeration>>
+    EXPIRED
+    EXPIRING_SOON
+    LOW_STOCK
+    OUT_OF_STOCK
+}
 
 User "*" --> "1" Role
-User "1" --> "*" Motion
-product "1" --> "*" Motion
-product "1" --> "*" ExpirationAlert
-User "1" --> "*" Binnacle
-
-
+User "1" --> "*" Movement
+Medicine "1" --> "*" Batch
+Medicine "1" --> "*" Movement
+Batch "1" --> "*" Movement
+Medicine "1" --> "*" Alert
+Batch "0..1" --> "*" Alert
+Report <|-- InventoryReport
+Report <|-- MovementsReport
+Report <|-- ExpiringReport
+Report <|-- LowStockReport
+Report <|-- ByUserReport
 ```
-## Diagrama de casos de usos
-```mermaid
 
+## Diagrama de casos de uso
+
+```mermaid
 flowchart LR
 
 Administrador([Administrador])
-Empleado([Empleado])
+Farmaceutico([Farmaceutico])
+Auditor([Auditor])
 Sistema([Sistema])
 
 subgraph FarmaExpres
-
-UC1([Gestionar Usuarios])
-UC2([Autenticarse])
-UC3([Cambiar Contraseña])
-
-UC4([Registrar Medicamento])
-UC5([Actualizar Medicamento])
-
-
-UC7([Consultar Inventario])
-
-UC8([Generar Alertas de Vencimiento])
-
-UC11([Ver Historial de Movimientos])
-
+UC1([Autenticarse])
+UC2([Gestionar usuarios])
+UC3([Cambiar contrasena])
+UC4([Consultar medicamentos])
+UC5([Registrar medicamento])
+UC6([Editar medicamento])
+UC7([Desactivar medicamento])
+UC8([Registrar entrada])
+UC9([Registrar salida])
+UC10([Consultar movimientos])
+UC11([Consultar alertas])
+UC12([Generar reportes])
+UC13([Generar alertas de vencimiento y stock])
 end
 
-%% Relaciones Administrador
 Administrador --> UC1
 Administrador --> UC2
 Administrador --> UC3
 Administrador --> UC4
 Administrador --> UC5
+Administrador --> UC6
 Administrador --> UC7
+Administrador --> UC10
 Administrador --> UC11
+Administrador --> UC12
 
-%% Relaciones Farmacéutico
-Empleado --> UC2
-Empleado --> UC7
+Farmaceutico --> UC1
+Farmaceutico --> UC3
+Farmaceutico --> UC4
+Farmaceutico --> UC8
+Farmaceutico --> UC9
+Farmaceutico --> UC11
 
+Auditor --> UC1
+Auditor --> UC4
+Auditor --> UC10
+Auditor --> UC12
 
-
-%% Sistema genera alertas automáticamente
-Sistema --> UC8
+Sistema --> UC13
 ```
 
-## Diagrama de Arquitectura Base
+## Diagrama de arquitectura base
 
 ```mermaid
 flowchart LR
 
-Cliente([Cliente REST / Postman])
+Cliente([Frontend React / Vite])
 
-subgraph Gateway
-GW[API Gateway]
+subgraph Frontend
+APP[Modulos: auth, users, medicines, entries, exits, movements, alerts, reports]
 end
 
-subgraph Servicios
+subgraph Backend
+GW[API Gateway]
 AUTH[Auth Service]
 INV[Inventory Service]
+REP[Reporting Service]
+ALR[Alerts Service]
 end
 
-subgraph BaseDeDatos
-DBL[(PostgreSQL login)]
-DBI[(PostgreSQL Inventory)]
+subgraph Datos
+DBAUTH[(PostgreSQL Auth)]
+DBINV[(PostgreSQL Inventory)]
 end
 
-Cliente --> GW
+Cliente --> APP
+APP --> GW
 GW --> AUTH
 GW --> INV
-
-AUTH --> DBL
-INV --> DBI
-
+GW --> REP
+GW --> ALR
+AUTH --> DBAUTH
+INV --> DBINV
+REP --> DBINV
+ALR --> DBINV
 ```
 
-### Diagrama de Contexto
+## Diagrama de contexto
 
 ```mermaid
 flowchart LR
 
-Security[Contexto Seguridad]
-Inventory[Contexto Inventario]
-Movement[Contexto Movimientos]
-Monitoring[Contexto Alertas y Reportes]
+Security[Contexto de Seguridad]
+Users[Contexto de Usuarios]
+Medicines[Contexto de Medicamentos]
+Inventory[Contexto de Inventario]
+Movements[Contexto de Movimientos]
+Alerts[Contexto de Alertas]
+Reports[Contexto de Reportes]
 
-Security --> Inventory
-Inventory --> Movement
-Inventory --> Monitoring
-Movement --> Monitoring
-
+Security --> Users
+Security --> Medicines
+Users --> Movements
+Medicines --> Inventory
+Inventory --> Movements
+Inventory --> Alerts
+Movements --> Reports
+Alerts --> Reports
 ```
+
+## Alineacion con el frontend actual
+
+Este repositorio de diagramas queda alineado con los modulos funcionales actualmente implementados en el frontend:
+
+- `auth`
+- `users`
+- `medicines`
+- `entries`
+- `exits`
+- `movements`
+- `alerts`
+- `reports`
+
+Notas:
+
+- `dashboard` y `audit` aparecen en la referencia visual, pero no forman parte de las rutas funcionales actuales del frontend.
+- Los reportes actualmente contemplados en la interfaz son: inventario actual, movimientos, proximos a vencer, bajo stock y por usuario.
+- Las alertas actuales contemplan: vencidos, proximos a vencer, bajo stock y agotados.
