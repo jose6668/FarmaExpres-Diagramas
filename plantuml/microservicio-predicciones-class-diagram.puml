@@ -1,0 +1,136 @@
+@startuml
+title FarmaExpres - Diagrama de clases del microservicio de predicción NoSQL
+
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+
+class IngestRequest {
+  +source: string
+  +product_count: int
+  +days: int
+}
+
+class TrainRequest {
+  +horizon_days: int
+}
+
+class PredictionApi {
+  +health()
+  +seed_test_data(request)
+  +ingest(request, context)
+  +clean()
+  +train(request)
+  +recalculate(request)
+  +list_predictions(limit)
+  +get_prediction(product_id)
+  +metrics()
+}
+
+class Settings {
+  +mongo_uri: string
+  +mongo_database: string
+  +relational_db_url: string
+  +inventory_service_url: string
+  +jwt_secret: string
+  +environment: string
+  +enable_dev_seed_endpoints: bool
+}
+
+class AuthContext {
+  +token: string
+  +user_id: string
+  +email: string
+  +name: string
+  +role: string
+}
+
+class AuthService {
+  +get_auth_context(authorization)
+  +require_roles(roles)
+  +ensure_dev_seed_enabled(context, roles)
+}
+
+class MongoDatabase {
+  +get_client()
+  +get_database()
+  +ensure_indexes(db)
+  +ping_database()
+}
+
+class InventoryClient {
+  +fetch_inventory_snapshot(context)
+}
+
+class IngestionService {
+  +replace_generated_data(db, product_count, days)
+  +ingest_from_inventory_snapshot(db, snapshot)
+  +ingest_from_postgres(db, relational_db_url)
+  -replace_active_training_dataset(db, raw_records, snapshots)
+  -replace_products_snapshot(db, snapshots)
+}
+
+class SampleDataService {
+  +generate_synthetic_data(product_count, days, seed)
+}
+
+class CleaningService {
+  +clean_records(raw_records)
+  +normalize_name(value)
+  +parse_date(value)
+}
+
+class PredictionService {
+  +build_predictions(cleaned_records, snapshots, horizon_days)
+  -risk_level(stock, minimum_stock, predicted_units, daily_average)
+  -calculate_mae(daily_amounts)
+}
+
+database "raw_data" as RawData
+database "cleaned_data" as CleanedData
+database "products_snapshot" as ProductsSnapshot
+database "predictions" as Predictions
+database "model_metrics" as ModelMetrics
+
+PredictionApi --> IngestRequest
+PredictionApi --> TrainRequest
+PredictionApi --> AuthService
+PredictionApi --> MongoDatabase
+PredictionApi --> IngestionService
+PredictionApi --> CleaningService
+PredictionApi --> PredictionService
+
+AuthService --> AuthContext
+AuthService --> Settings
+InventoryClient --> AuthContext
+InventoryClient --> Settings
+IngestionService --> InventoryClient
+IngestionService --> SampleDataService
+IngestionService --> RawData
+IngestionService --> ProductsSnapshot
+IngestionService --> CleanedData : reinicia
+IngestionService --> Predictions : reinicia
+CleaningService --> RawData
+CleaningService --> CleanedData
+PredictionService --> CleanedData
+PredictionService --> ProductsSnapshot
+PredictionService --> Predictions
+PredictionService --> ModelMetrics
+MongoDatabase --> RawData
+MongoDatabase --> CleanedData
+MongoDatabase --> ProductsSnapshot
+MongoDatabase --> Predictions
+MongoDatabase --> ModelMetrics
+
+note right of PredictionService
+Usa promedio móvil de 30 días sobre
+movimientos Exit para estimar demanda
+y clasificar riesgo de agotamiento.
+end note
+
+note bottom of IngestionService
+Lee datos desde inventory-service,
+PostgreSQL o datos sintéticos de prueba.
+No escribe en la base relacional.
+end note
+
+@enduml

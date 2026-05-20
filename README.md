@@ -3,6 +3,7 @@
 ## Diagrama BPMN
 
 - [Proceso BPMN del MVP](./FarmaExpres_BPMN_MVP_v1_0.pdf)
+- [Diagrama de clases del microservicio de predicción NoSQL](./docs/diagrama-clases-microservicio-predicciones.md)
 
 ## Diagrama de clases
 
@@ -157,7 +158,7 @@ Sistema([Sistema])
 subgraph FarmaExpres
 UC1([Autenticarse])
 UC2([Gestionar usuarios])
-UC3([Cambiar contrasena])
+UC3([Cambiar contraseña])
 UC4([Consultar medicamentos])
 UC5([Registrar medicamento])
 UC6([Editar medicamento])
@@ -204,7 +205,7 @@ flowchart LR
 Cliente([Frontend React / Vite])
 
 subgraph Frontend
-APP[Modulos: auth, users, medicines, entries, exits, movements, alerts, reports]
+APP[Módulos: auth, users, medicines, entries, exits, movements, alerts, reports]
 end
 
 subgraph Backend
@@ -255,9 +256,9 @@ Movements --> Reports
 Alerts --> Reports
 ```
 
-## Alineacion con el frontend actual
+## Alineación con el frontend actual
 
-Este repositorio de diagramas queda alineado con los modulos funcionales actualmente implementados en el frontend:
+Este repositorio de diagramas queda alineado con los módulos funcionales actualmente implementados en el frontend:
 
 - `auth`
 - `users`
@@ -271,5 +272,5 @@ Este repositorio de diagramas queda alineado con los modulos funcionales actualm
 Notas:
 
 - `dashboard` y `audit` aparecen en la referencia visual, pero no forman parte de las rutas funcionales actuales del frontend.
-- Los reportes actualmente contemplados en la interfaz son: inventario actual, movimientos, proximos a vencer, bajo stock y por usuario.
-- Las alertas actuales contemplan: vencidos, proximos a vencer, bajo stock y agotados.
+- Los reportes actualmente contemplados en la interfaz son: inventario actual, movimientos, próximos a vencer, bajo stock y por usuario.
+- Las alertas actuales contemplan: vencidos, próximos a vencer, bajo stock y agotados.
